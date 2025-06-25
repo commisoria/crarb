@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crypto Arbitrage Scanner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            overflow-x: hidden;
+            font-family: sans-serif;
+        }
+        .contact-info {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            color: #2e86c1;
+            white-space: nowrap;
+        }
+        .container {
+            max-width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            margin-top: 50px;
+        }
+        .table-wrapper {
+            max-width: 100%;
+            overflow-x: auto;
+            background-color: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin: 0 auto 10px auto;
+        }
+        #data-table {
+            width: 100% !important;
+            table-layout: auto;
+        }
+        thead th {
+            background-color: #2e86c1 !important;
+            color: white !important;
+            text-align: center;
+            white-space: nowrap;
+        }
+        table.dataTable th, table.dataTable td {
+            white-space: nowrap;
+        }
+        h2 {
+            text-align: center;
+            color: #006400;
+            font-size: 32px;
+            margin: 0 0 10px 0;
+        }
+        .donation-message, .i-message, .dev-message {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .donation-message { color: #CB4335; }
+        .i-message { color: #6495ED; }
+        .dev-message { color: #2E4053; }
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 10px;
+        }
+        .last-updated {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="contact-info">
+        <div>Contact: ism.bolat@hotmail.com</div>
+        <div style="color: #27AE60;">USDT (BEP20): 0xd3963e34f1da49997f0e5d6ff28b31835deba838</div>
+        <div style="color: #95A5A6;">BTC (BTC): 1HW8vzEGZifCwu9JYXbM98sXpnyyqUTgBp</div>
+    </div>
+
+    <div class="container">
+        <h2>Crypto Arbitrage Scanner</h2>
+        <p class="donation-message">
+            This website is completely free. But your donations help improve arbitrage opportunities.
+        </p>
+        <p class="i-message">
+            If there are areas that need to be improved on the arbitrage dataframe, you can send it to me at: ism.bolat@hotmail.com.
+        </p>
+        <p class="dev-message">
+            Development objectives: Adding more exchanges, a better liquidity forecast, more calculation details for better results
+        </p>
+        <div class="table-wrapper" id="table-container">
+            Loading latest table...
+        </div>
+        <p class="last-updated" id="last-updated">Last updated: --:--:--</p>
+    </div>
+
+    <script>
+        function loadTable() {
+            fetch('/table')
+                .then(response => response.text())
+                .then(html => {
+                    $('#table-container').html(html);
+                    if ($.fn.DataTable.isDataTable('#data-table')) {
+                        $('#data-table').DataTable().destroy();
+                    }
+                    $('#data-table').DataTable({
+                        scrollX: true,
+                        autoWidth: false,
+                        pageLength: 100,
+                        lengthMenu: [[100, 200, 500, -1], [100, 200, 500, "All"]]
+                    });
+
+                    const now = new Date().toLocaleTimeString();
+                    document.getElementById('last-updated').textContent = 'Last updated: ' + now;
+                });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            loadTable();
+            setInterval(loadTable, 60000); // Refresh every 60 seconds
+        });
+    </script>
+</body>
+</html>
